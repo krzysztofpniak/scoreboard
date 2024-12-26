@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESnext",
+    "outDir": "./dist",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "declaration": true
+  },
+  "include": ["src"],
+  "exclude": ["**/*.test.ts", "node_modules"]
+}
