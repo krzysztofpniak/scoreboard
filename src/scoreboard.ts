@@ -11,10 +11,20 @@ const isValidTeamName = (name: string): boolean =>
 
 const isNaturalNumber = (n: number): boolean => Number.isInteger(n) && n >= 0;
 
+/**
+ * A class to manage a scoreboard for matches, including updating, and summarizing match scores.
+ */
 export class Scoreboard {
-  matches: Match[] = [];
+  private matches: Match[] = [];
 
-  ensureMatchExists(homeTeam: string, awayTeam: string) {
+  /**
+   * Validates that a match exists.
+   * @private
+   * @param {string} homeTeam - The name of the home team.
+   * @param {string} awayTeam - The name of the away team.
+   * @throws {Error} If the match does not exist.
+   */
+  private ensureMatchExists(homeTeam: string, awayTeam: string) {
     if (
       !this.matches.some(
         (m) => m.homeTeam === homeTeam && m.awayTeam === awayTeam
@@ -23,6 +33,12 @@ export class Scoreboard {
       throw new Error(`Match between ${homeTeam} and ${awayTeam} not found`);
     }
   }
+  /**
+   * Starts a new match and adds it to the scoreboard.
+   * @param {string} homeTeam - The name of the home team.
+   * @param {string} awayTeam - The name of the away team.
+   * @throws {Error} If the home or away team names are invalid or already playing.
+   */
   startMatch(homeTeam: string, awayTeam: string): void {
     if (!isValidTeamName(homeTeam)) {
       throw new Error('Home team name cannot be an empty string');
@@ -54,6 +70,14 @@ export class Scoreboard {
       startTime: new Date(),
     });
   }
+  /**
+   * Updates the score of an existing match.
+   * @param {string} homeTeam - The name of the home team.
+   * @param {string} awayTeam - The name of the away team.
+   * @param {number} homeScore - The new score for the home team.
+   * @param {number} awayScore - The new score for the away team.
+   * @throws {Error} If the match is not found or scores are invalid.
+   */
   updateScore(
     homeTeam: string,
     awayTeam: string,
@@ -72,6 +96,12 @@ export class Scoreboard {
         : m
     );
   }
+  /**
+   * Removes a match from the scoreboard.
+   * @param {string} homeTeam - The name of the home team.
+   * @param {string} awayTeam - The name of the away team.
+   * @throws {Error} If the match is not found.
+   */
   finishMatch(homeTeam: string, awayTeam: string): void {
     this.ensureMatchExists(homeTeam, awayTeam);
 
@@ -79,6 +109,12 @@ export class Scoreboard {
       (m) => m.homeTeam !== homeTeam || m.awayTeam !== awayTeam
     );
   }
+  /**
+   * Retrieves a summary of matches currently in progress.
+   * Matches are ordered by total score (highest first).
+   * If total scores are the same, matches are ordered by the most recently started.
+   * @returns {Array<{ homeTeam: string, awayTeam: string, homeScore: number, awayScore: number }>}
+   */
   getSummary(): Match[] {
     return [...this.matches].sort((a, b) => {
       const totalScoreA = a.homeScore + a.awayScore;
